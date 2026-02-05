@@ -1,0 +1,12 @@
+{
+  "name": "larry-steve-penguins",
+  "version": "1.0.0",
+  "description": "Daily penguin celebration with SMS notifications",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "twilio": "^5.3.4"
+  }
+}
