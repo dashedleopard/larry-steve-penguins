@@ -14,17 +14,17 @@ const dailyMessages = {
 module.exports = async (req, res) => {
   // Verify this is called by Vercel Cron or allow manual trigger with auth
   const authHeader = req.headers.authorization;
-  const cronSecret = process.env.CRON_SECRET || 'default-secret';
+  const cronSecret = (process.env.CRON_SECRET || 'default-secret').trim();
 
   if (authHeader !== `Bearer ${cronSecret}`) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   try {
-    const accountSid = process.env.TWILIO_ACCOUNT_SID;
-    const authToken = process.env.TWILIO_AUTH_TOKEN;
-    const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
-    const recipientNumber = process.env.RECIPIENT_PHONE_NUMBER;
+    const accountSid = process.env.TWILIO_ACCOUNT_SID?.trim();
+    const authToken = process.env.TWILIO_AUTH_TOKEN?.trim();
+    const twilioNumber = process.env.TWILIO_PHONE_NUMBER?.trim();
+    const recipientNumber = process.env.RECIPIENT_PHONE_NUMBER?.trim();
 
     if (!accountSid || !authToken || !twilioNumber || !recipientNumber) {
       throw new Error('Missing required environment variables');
