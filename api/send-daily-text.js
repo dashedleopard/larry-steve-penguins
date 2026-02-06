@@ -15,13 +15,17 @@ module.exports = async (req, res) => {
     const accountSid = process.env.TWILIO_ACCOUNT_SID?.trim();
     const authToken = process.env.TWILIO_AUTH_TOKEN?.trim();
     const twilioNumber = process.env.TWILIO_PHONE_NUMBER?.trim();
-    const recipientNumber = process.env.RECIPIENT_PHONE_NUMBER?.trim();
+    const recipientNumbers = process.env.RECIPIENT_PHONE_NUMBERS?.trim();
 
-    if (!accountSid || !authToken || !twilioNumber || !recipientNumber) {
+    if (!accountSid || !authToken || !twilioNumber || !recipientNumbers) {
       throw new Error('Missing required environment variables');
     }
 
     const client = twilio(accountSid, authToken);
+
+    // Parse multiple recipient numbers (comma-separated)
+    const recipients = recipientNumbers.split(',').map(num => num.trim());
+    console.log(`Sending to ${recipients.length} recipient(s):`, recipients);
 
     // Get today's day of week (0 = Sunday, 6 = Saturday) and day of month (1-31)
     const now = new Date();
@@ -38,16 +42,38 @@ module.exports = async (req, res) => {
     const stats = getMessageStats(message);
     console.log('Message stats:', stats);
 
-    // Send SMS
-    const result = await client.messages.create({
-      body: message,
-      from: twilioNumber,
-      to: recipientNumber
-    });
+    // Send SMS to all recipients
+    const results = await Promise.all(
+      recipients.map(async (recipientNumber) => {
+        try {
+          const result = await client.messages.create({
+            body: message,
+            from: twilioNumber,
+            to: recipientNumber
+          });
+          return {
+            success: true,
+            to: recipientNumber,
+            messageSid: result.sid
+          };
+        } catch (error) {
+          console.error(`Failed to send to ${recipientNumber}:`, error);
+          return {
+            success: false,
+            to: recipientNumber,
+            error: error.message
+          };
+        }
+      })
+    );
+
+    const successCount = results.filter(r => r.success).length;
 
     return res.status(200).json({
-      success: true,
-      messageSid: result.sid,
+      success: successCount > 0,
+      recipientCount: recipients.length,
+      successCount: successCount,
+      results: results,
       message: message,
       stats: stats,
       sentAt: new Date().toISOString()
