@@ -22,7 +22,7 @@ ${wisdomEmoji} Penguin Wisdom: "${wisdom}"
 
 ${factEmoji} Fun Fact: ${fact}
 
-🔗 View the celebration: https://larry-steve-penguins-temp.vercel.app/`;
+🔗 View the celebration: https://dashedleopard.github.io/larry-steve-penguins/`;
 };
 
 /**

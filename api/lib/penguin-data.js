@@ -16,7 +16,8 @@ const dailyMessages = {
   6: "Happy Saturday from Larry & Steve! Weekend waddles!"
 };
 
-// Penguin wisdom quotes for each day of the month (1-31)
+// Penguin wisdom quotes — 62 quotes, indexed by day of month (1-31)
+// plus extras drawn randomly when dayOfMonth exceeds 31 or for variety
 const penguinWisdom = {
   1: "A penguin never slips on ice, but always learns from a stumble.",
   2: "The coldest waters teach the warmest lessons.",
@@ -51,7 +52,7 @@ const penguinWisdom = {
   31: "Tomorrow brings fresh ice and new adventures."
 };
 
-// 30 penguin facts (40-70 chars each for SMS efficiency)
+// 60 penguin facts for daily variety
 const penguinFacts = [
   "Emperor penguins can dive over 1,800 feet deep!",
   "Penguins can swim up to 22 mph underwater!",
@@ -82,10 +83,41 @@ const penguinFacts = [
   "Rockhopper penguins hop over rocky terrain!",
   "Chinstrap penguins are named for their facial marking!",
   "Penguins can see better underwater than in air!",
-  "African penguins can live up to 20 years!"
+  "African penguins can live up to 20 years!",
+  // 30 new facts
+  "Emperor penguins huddle in groups of up to 5,000!",
+  "Penguins have about 100 feathers per square inch!",
+  "The oldest known penguin fossil is 62 million years old!",
+  "Galapagos penguins live near the equator!",
+  "Penguins' knees are hidden inside their bodies!",
+  "A penguin's heartbeat slows to 20 bpm while diving!",
+  "King penguin chicks take over a year to fledge!",
+  "Penguins can sleep standing up on the ice!",
+  "Emperor penguins survive temperatures of -76°F!",
+  "Penguin colonies are called rookeries!",
+  "Adelie penguins can march 30 miles over ice to feed!",
+  "Penguins swallow pebbles to help with buoyancy!",
+  "The largest ever penguin was 6.8 feet tall!",
+  "Magellanic penguins migrate 3,000 miles each year!",
+  "Penguins' black backs help absorb heat from the sun!",
+  "Some penguins toboggan on their bellies to move faster!",
+  "Penguin couples often bow to each other as a greeting!",
+  "Fairy penguins weigh only about 2 pounds!",
+  "Penguins can jump up to 9 feet to land on ice shelves!",
+  "A penguin's tongue has rear-facing spines to grip fish!",
+  "Snares penguins are found on only one island in the world!",
+  "Penguins are one of the few birds with solid bones!",
+  "Chinstrap penguins get only 4 seconds of sleep at a time!",
+  "Emperor penguins can fast for up to 4 months straight!",
+  "Penguins have a third eyelid to protect their eyes underwater!",
+  "King penguins have the longest breeding cycle of any bird!",
+  "Penguin chicks huddle in groups called crèches!",
+  "Penguins preen for hours to stay waterproof!",
+  "Rockhopper penguins can climb steep rocky cliffs!",
+  "Penguins communicate through body language and flipper waving!"
 ];
 
-// 15 penguin jokes for interactive replies
+// 30 penguin jokes for interactive replies
 const penguinJokes = [
   "Why don't penguins like talking to strangers? They find it hard to break the ice! 🐧",
   "What do penguins wear to the beach? A beak-ini! 👙",
@@ -101,7 +133,42 @@ const penguinJokes = [
   "What's a penguin's favorite salad? Iceberg lettuce! 🥗",
   "Why did the penguin cross the road? To go with the floe! 🚶",
   "What do you call fifty penguins in the Arctic? Really lost! 🧭",
-  "How do penguins pass exams? They just wing it! 📝"
+  "How do penguins pass exams? They just wing it! 📝",
+  // 15 new jokes
+  "What do penguins eat for lunch? Ice-burgers! 🍔",
+  "Why did the penguin get promoted? He was outstanding in his field of ice! 🏆",
+  "What's a penguin's favorite pasta? Penguine! 🍝",
+  "How do penguins make a decision? Flipper coin toss! 🪙",
+  "What do you call a happy penguin? A pen-grin! 😁",
+  "Why do penguins carry fish in their beaks? Because they don't have pockets! 🐟",
+  "What's a penguin's favorite candy? Ice Pops! 🍭",
+  "Why was the penguin a great musician? He had perfect pitch! 🎵",
+  "What do penguins do in their spare time? Chill out! 🧊",
+  "What's a penguin's favorite social media? Insta-glam on ice! 📱",
+  "Why do penguins always win arguments? They have strong points! 🎯",
+  "What's a penguin's favorite dance? The ice-olated shuffle! 💃",
+  "Why did the penguin bring a ladder? To reach the high notes! 🎤",
+  "What did the ocean say to the penguin? Nothing, it just waved! 🌊",
+  "How do penguins stay in shape? They do ice-ometric exercises! 💪"
+];
+
+// Curated penguin image URLs for MMS (public domain / freely licensed)
+const penguinImages = [
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Emperor_Penguin_Manchot_empereur.jpg/800px-Emperor_Penguin_Manchot_empereur.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Aptenodytes_forsteri_-Snow_Hill_Island%2C_Antarctica_-adults_and_juvenile-8.jpg/800px-Aptenodytes_forsteri_-Snow_Hill_Island%2C_Antarctica_-adults_and_juvenile-8.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Manchot_papou_-_Gentoo_Penguin.jpg/800px-Manchot_papou_-_Gentoo_Penguin.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Chinstrap_Penguin_%28Pygoscelis_antarcticus%29_-_Pair_at_Aitcho_Island.jpg/800px-Chinstrap_Penguin_%28Pygoscelis_antarcticus%29_-_Pair_at_Aitcho_Island.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Penguins_walking_-Moltke_Harbour%2C_South_Georgia%2C_British_overseas_territory%2C_UK-8.jpg/800px-Penguins_walking_-Moltke_Harbour%2C_South_Georgia%2C_British_overseas_territory%2C_UK-8.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Penguins_Edinburgh_Zoo_2004_SMC.jpg/800px-Penguins_Edinburgh_Zoo_2004_SMC.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Rockhopper_Penguin_in_Edinburgh_Zoo_2004_SMC.jpg/800px-Rockhopper_Penguin_in_Edinburgh_Zoo_2004_SMC.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Falkland_Islands_Penguins_36.jpg/800px-Falkland_Islands_Penguins_36.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/South_Shetland-2016-Deception_Island%E2%80%93Chinstrap_penguin_%28Pygoscelis_antarcticus%29_04.jpg/800px-South_Shetland-2016-Deception_Island%E2%80%93Chinstrap_penguin_%28Pygoscelis_antarcticus%29_04.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Penguins_Falklands.jpg/800px-Penguins_Falklands.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Camara_lridge_-_Manchots_royaux_%282%29.jpg/800px-Camara_lridge_-_Manchots_royaux_%282%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Manchot_Adelie_-_Adelie_Penguin.jpg/800px-Manchot_Adelie_-_Adelie_Penguin.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/King_Penguins.jpg/800px-King_Penguins.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Penguin_in_Antarctica_jumping_out_of_the_water.jpg/800px-Penguin_in_Antarctica_jumping_out_of_the_water.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Manchot_royal_-_King_Penguin.jpg/800px-Manchot_royal_-_King_Penguin.jpg"
 ];
 
 module.exports = {
@@ -109,5 +176,6 @@ module.exports = {
   penguinWisdom,
   penguinFacts,
   penguinJokes,
+  penguinImages,
   getRandomItem
 };

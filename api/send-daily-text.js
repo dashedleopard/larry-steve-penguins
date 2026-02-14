@@ -1,5 +1,5 @@
 const twilio = require('twilio');
-const { dailyMessages, penguinWisdom, penguinFacts, getRandomItem } = require('./lib/penguin-data');
+const { dailyMessages, penguinWisdom, penguinFacts, penguinImages, getRandomItem } = require('./lib/penguin-data');
 const { formatDailyMessage, getMessageStats } = require('./lib/message-formatter');
 
 module.exports = async (req, res) => {
@@ -63,14 +63,18 @@ module.exports = async (req, res) => {
     const stats = getMessageStats(message);
     console.log('Message stats:', stats);
 
-    // Send SMS to all recipients
+    // Pick a random penguin image for MMS
+    const imageUrl = getRandomItem(penguinImages);
+
+    // Send MMS to all recipients
     const results = await Promise.all(
       recipients.map(async (recipientNumber) => {
         try {
           const result = await client.messages.create({
             body: message,
             from: twilioNumber,
-            to: recipientNumber
+            to: recipientNumber,
+            mediaUrl: [imageUrl]
           });
           return {
             success: true,

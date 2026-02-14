@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Larry & Steve's Daily Wave</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,421 +15,293 @@
         }
 
         body {
-            font-family: 'Comic Sans MS', 'Arial', sans-serif;
-            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            font-family: 'Nunito', system-ui, -apple-system, sans-serif;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: white;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated gradient background */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: linear-gradient(160deg, #0a1628 0%, #0d2847 30%, #1a4a7a 60%, #2d6fa0 100%);
+        }
+
+        /* Aurora / northern lights effect */
+        .aurora {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: 0.3;
+            background:
+                radial-gradient(ellipse 80% 40% at 20% 20%, rgba(64, 224, 208, 0.4) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 30% at 70% 30%, rgba(100, 149, 237, 0.3) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 25% at 50% 15%, rgba(147, 112, 219, 0.2) 0%, transparent 70%);
+            animation: aurora-shift 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes aurora-shift {
+            0% { opacity: 0.2; transform: translateX(-2%); }
+            100% { opacity: 0.4; transform: translateX(2%); }
+        }
+
+        /* Stars */
+        .stars {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.2; }
+            100% { opacity: 1; }
         }
 
         .container {
             text-align: center;
-            padding: 20px;
+            padding: 24px;
+            max-width: 520px;
+            width: 100%;
         }
 
         .clock {
-            font-size: 52px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
+            font-size: 64px;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 20px rgba(100, 200, 255, 0.3);
+            font-variant-numeric: tabular-nums;
         }
 
         .status {
-            font-size: 28px;
-            margin-bottom: 30px;
-            min-height: 40px;
-            font-weight: bold;
+            font-size: 20px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 32px;
+            min-height: 28px;
+            transition: all 0.4s ease;
         }
 
-        .penguins-wrapper {
-            display: none;
-            justify-content: center;
-            gap: 0;
-            margin: 0 auto;
-            align-items: flex-end;
+        .status.celebrating {
+            color: #ffd700;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        /* Penguin scene */
+        .scene {
             position: relative;
-        }
-
-        .penguins-wrapper.active {
             display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 0;
+            margin: 0 auto 32px;
+            height: 260px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .penguin-container {
+        .scene.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scene.celebrating .penguin-wrap {
+            animation: celebrate-bounce 1.2s ease-in-out infinite;
+        }
+
+        .scene.celebrating .penguin-wrap:nth-child(3) {
+            animation-delay: 0.15s;
+        }
+
+        /* Ice platform */
+        .ice-platform {
+            position: absolute;
+            bottom: 0;
+            width: 340px;
+            height: 40px;
+            background: linear-gradient(180deg, rgba(200, 230, 255, 0.9) 0%, rgba(160, 210, 245, 0.6) 100%);
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(100, 180, 255, 0.2), inset 0 -2px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .penguin-wrap {
             position: relative;
-            width: 180px;
-            height: 280px;
-            transform: scale(0.75);
-        }
-
-        /* Larry has a bigger head */
-        .penguin-container:first-child .penguin-head {
-            transform: scale(1.2);
-        }
-
-        .penguin-container:first-child .penguin-name {
-            top: -45px;
+            width: 130px;
+            z-index: 1;
+            margin-bottom: 20px;
         }
 
         .penguin-name {
-            position: absolute;
-            top: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 28px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            z-index: 10;
-        }
-
-        .penguin {
-            position: relative;
-            width: 140px;
-            height: 220px;
-            margin: 0 auto;
-        }
-
-        /* Penguin Body - cartoon style, rounder */
-        .penguin-body {
-            position: absolute;
-            width: 110px;
-            height: 140px;
-            background: #2c3e50;
-            border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
-            top: 55px;
-            left: 15px;
-            z-index: 1;
-            border: 3px solid #1a252f;
-        }
-
-        .penguin-belly {
-            position: absolute;
-            width: 75px;
-            height: 100px;
-            background: #fff;
-            border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
-            top: 70px;
-            left: 32px;
-            z-index: 2;
-            border: 2px solid #e0e0e0;
-        }
-
-        /* Penguin Head - bigger head for cartoon style */
-        .penguin-head {
-            position: absolute;
-            width: 100px;
-            height: 85px;
-            background: #2c3e50;
-            border-radius: 50%;
-            top: 0;
-            left: 20px;
-            z-index: 3;
-            border: 3px solid #1a252f;
-        }
-
-        .penguin-face {
-            position: absolute;
-            width: 70px;
-            height: 55px;
-            background: #fff;
-            border-radius: 50%;
-            top: 25px;
-            left: 15px;
-        }
-
-        /* Eyes - big cartoon eyes */
-        .eye {
-            position: absolute;
-            width: 24px;
-            height: 28px;
-            background: white;
-            border-radius: 50%;
-            top: 35px;
-            z-index: 4;
-            border: 2px solid #1a252f;
-        }
-
-        .eye-left {
-            left: 30px;
-        }
-
-        .eye-right {
-            left: 60px;
-        }
-
-        .pupil {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #1a1a2e;
-            border-radius: 50%;
-            top: 8px;
-            left: 6px;
-        }
-
-        .sparkle {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background: white;
-            border-radius: 50%;
-            top: 3px;
-            left: 2px;
-        }
-
-        /* Rosy cheeks - bigger for cartoon */
-        .cheek {
-            position: absolute;
-            width: 22px;
-            height: 18px;
-            background: #ff9eb8;
-            border-radius: 50%;
-            top: 52px;
-            opacity: 0.8;
-            z-index: 4;
-        }
-
-        .cheek-left {
-            left: 18px;
-        }
-
-        .cheek-right {
-            right: 18px;
-        }
-
-        /* Beak - smaller cartoon beak */
-        .beak {
-            position: absolute;
-            width: 0;
-            height: 0;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-top: 18px solid #ffb347;
-            top: 52px;
-            left: 42px;
-            z-index: 4;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
-        }
-
-        /* Wings - smaller and rounder */
-        .wing {
-            position: absolute;
-            width: 40px;
-            height: 75px;
-            background: #2c3e50;
-            border-radius: 50% 0 65% 50%;
-            top: 80px;
-            z-index: 0;
-            border: 3px solid #1a252f;
-        }
-
-        .wing-left {
-            left: -5px;
-            transform-origin: top right;
-        }
-
-        .wing-right {
-            right: -5px;
-            transform: scaleX(-1);
-            transform-origin: top left;
-        }
-
-        /* Flag with "1:26" */
-        .flag-pole {
-            position: absolute;
-            width: 4px;
-            height: 100px;
-            background: #8b6914;
-            top: -20px;
-            right: -45px;
-            z-index: 5;
-            border-radius: 3px;
-        }
-
-        .flag {
-            position: absolute;
-            width: 60px;
-            height: 38px;
-            background: #ff6b6b;
-            top: -20px;
-            left: 4px;
-            border-radius: 0 6px 6px 0;
-            transform-origin: left center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ee5a5a;
-        }
-
-        .flag-text {
-            font-size: 20px;
-            font-weight: bold;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 800;
             color: white;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            margin-bottom: 8px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
-        /* Feet - cuter cartoon feet */
-        .feet {
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 18px;
-            z-index: 0;
+        /* SVG penguin styling */
+        .penguin-svg {
+            width: 120px;
+            height: 180px;
+            display: block;
+            margin: 0 auto;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
         }
 
-        .foot {
-            width: 35px;
-            height: 18px;
-            background: #ffb347;
-            border-radius: 50% 50% 0 0;
-            border: 2px solid #ff9a2e;
-        }
-
-        /* Holding hands element */
-        .holding-hands {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            z-index: 6;
+        /* Heart between penguins */
+        .heart-link {
+            position: relative;
+            width: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
-            animation: pulse 1.5s ease-in-out infinite;
+            margin-bottom: 60px;
+            z-index: 2;
+            font-size: 28px;
+            animation: pulse-heart 2s ease-in-out infinite;
         }
 
-        /* Animations */
-        @keyframes wave {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(40deg); }
-            75% { transform: rotate(-40deg); }
+        @keyframes pulse-heart {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
         }
 
-        @keyframes flagWave {
-            0%, 100% { transform: scaleX(1) rotate(0deg); }
-            50% { transform: scaleX(0.88) rotate(-8deg); }
+        @keyframes celebrate-bounce {
+            0%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-20px); }
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: scale(0.75) translateY(0); }
-            50% { transform: scale(0.75) translateY(-18px); }
+        /* Flag */
+        .flag-container {
+            position: absolute;
+            top: -10px;
+            right: -20px;
         }
 
-        @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
+        .flag-pole {
+            width: 3px;
+            height: 70px;
+            background: linear-gradient(180deg, #c9a84c, #8b6914);
+            border-radius: 2px;
+            position: relative;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .flag-banner {
+            position: absolute;
+            top: 0;
+            left: 3px;
+            width: 48px;
+            height: 30px;
+            background: linear-gradient(135deg, #ff6b6b, #ee4444);
+            border-radius: 0 6px 6px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(238, 68, 68, 0.3);
         }
 
-        @keyframes jump {
-            0%, 100% { transform: scale(0.75) translateY(0); }
-            50% { transform: scale(0.75) translateY(-30px); }
+        .scene.celebrating .flag-banner {
+            animation: flag-wave 0.6s ease-in-out infinite alternate;
         }
 
-        @keyframes dance {
-            0%, 100% { transform: scale(0.75) translateX(0); }
-            25% { transform: scale(0.75) translateX(-10px); }
-            75% { transform: scale(0.75) translateX(10px); }
+        @keyframes flag-wave {
+            0% { transform: scaleX(1) rotate(0deg); }
+            100% { transform: scaleX(0.92) rotate(-6deg); }
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.2); }
-        }
-
-        .penguins-wrapper.active .wing-right {
-            animation: wave 0.7s ease-in-out infinite;
-        }
-
-        .penguins-wrapper.active .flag {
-            animation: flagWave 0.5s ease-in-out infinite;
-        }
-
-        .penguins-wrapper.active .penguin-container {
-            animation: bounce 1.8s ease-in-out infinite;
-        }
-
-        .penguins-wrapper.active .penguin-container:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .penguins-wrapper.active .penguin-head {
-            animation: wiggle 1.3s ease-in-out infinite;
-        }
-
+        /* Countdown */
         .countdown {
-            font-size: 24px;
-            margin-top: 30px;
-            color: #ffd700;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 16px;
+            font-weight: 700;
+            color: rgba(255, 215, 0, 0.8);
+            margin-bottom: 24px;
+            min-height: 22px;
+            letter-spacing: 0.5px;
         }
 
+        /* Button */
         .test-button {
-            margin-top: 30px;
-            padding: 18px 40px;
-            font-size: 20px;
-            background: #ff6b6b;
+            padding: 14px 36px;
+            font-size: 16px;
+            font-weight: 800;
+            font-family: 'Nunito', system-ui, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #ee4444);
             color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s;
-            font-weight: bold;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 20px rgba(238, 68, 68, 0.3);
+            letter-spacing: 0.5px;
         }
 
         .test-button:hover {
-            background: #ee5a6f;
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(238, 68, 68, 0.4);
+        }
+
+        .test-button:active {
+            transform: translateY(0);
         }
 
         .info {
-            margin-top: 30px;
-            font-size: 18px;
-            opacity: 0.95;
-            font-weight: 500;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            margin-top: 24px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.7;
         }
 
-        /* Ice/snow decorations */
+        /* Snowflakes */
         .snowflake {
             position: fixed;
             color: white;
-            font-size: 20px;
-            opacity: 0.7;
-            animation: fall 10s linear infinite;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            animation: snow-fall linear infinite;
         }
 
-        @keyframes fall {
-            0% { transform: translateY(-100vh) rotate(0deg); }
-            100% { transform: translateY(100vh) rotate(360deg); }
+        @keyframes snow-fall {
+            0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
 
         /* Fireworks */
-        .firework {
+        .firework-particle {
             position: fixed;
             width: 4px;
             height: 4px;
             border-radius: 50%;
+            pointer-events: none;
             z-index: 1000;
         }
 
-        @keyframes explode {
+        @keyframes firework-burst {
             0% {
                 transform: translate(0, 0) scale(1);
                 opacity: 1;
@@ -436,447 +311,327 @@
                 opacity: 0;
             }
         }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .clock { font-size: 48px; }
+            .status { font-size: 17px; }
+            .scene { height: 220px; transform: scale(0.85); }
+            .container { padding: 16px; }
+        }
     </style>
 </head>
 <body>
+    <div class="bg"></div>
+    <div class="aurora"></div>
+    <div class="stars" id="stars"></div>
+
     <div class="container">
         <div class="clock" id="clock">00:00:00</div>
         <div class="status" id="status">Waiting for 1:26 PM...</div>
 
-        <div class="penguins-wrapper" id="penguinsWrapper">
+        <div class="scene" id="scene">
             <!-- Larry -->
-            <div class="penguin-container">
+            <div class="penguin-wrap">
                 <div class="penguin-name">Larry</div>
-                <div class="penguin">
-                    <div class="penguin-body"></div>
-                    <div class="penguin-belly"></div>
-                    <div class="penguin-head">
-                        <div class="penguin-face"></div>
-                        <div class="eye eye-left">
-                            <div class="pupil">
-                                <div class="sparkle"></div>
-                            </div>
-                        </div>
-                        <div class="eye eye-right">
-                            <div class="pupil">
-                                <div class="sparkle"></div>
-                            </div>
-                        </div>
-                        <div class="cheek cheek-left"></div>
-                        <div class="cheek cheek-right"></div>
-                        <div class="beak"></div>
-                    </div>
-                    <div class="wing wing-left"></div>
-                    <div class="wing wing-right">
-                        <div class="flag-pole">
-                            <div class="flag">
-                                <div class="flag-text">1:26</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="feet">
-                        <div class="foot"></div>
-                        <div class="foot"></div>
+                <svg class="penguin-svg" viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Body -->
+                    <ellipse cx="60" cy="120" rx="42" ry="55" fill="#1a2332"/>
+                    <!-- Belly -->
+                    <ellipse cx="60" cy="125" rx="28" ry="42" fill="white"/>
+                    <!-- Head -->
+                    <ellipse cx="60" cy="55" rx="36" ry="32" fill="#1a2332"/>
+                    <!-- Face -->
+                    <ellipse cx="60" cy="60" rx="24" ry="18" fill="white"/>
+                    <!-- Eyes -->
+                    <ellipse cx="50" cy="52" rx="8" ry="9" fill="white" stroke="#1a2332" stroke-width="1.5"/>
+                    <ellipse cx="70" cy="52" rx="8" ry="9" fill="white" stroke="#1a2332" stroke-width="1.5"/>
+                    <circle cx="51" cy="52" r="4.5" fill="#1a1a2e"/>
+                    <circle cx="71" cy="52" r="4.5" fill="#1a1a2e"/>
+                    <circle cx="49" cy="50" r="1.8" fill="white"/>
+                    <circle cx="69" cy="50" r="1.8" fill="white"/>
+                    <!-- Cheeks -->
+                    <ellipse cx="40" cy="62" rx="7" ry="5" fill="#ff9eb8" opacity="0.6"/>
+                    <ellipse cx="80" cy="62" rx="7" ry="5" fill="#ff9eb8" opacity="0.6"/>
+                    <!-- Beak -->
+                    <path d="M54 65 L60 74 L66 65 Z" fill="#ffb347"/>
+                    <!-- Wings -->
+                    <ellipse cx="20" cy="110" rx="14" ry="32" fill="#1a2332" transform="rotate(-10, 20, 110)"/>
+                    <ellipse cx="100" cy="110" rx="14" ry="32" fill="#1a2332" transform="rotate(10, 100, 110)"/>
+                    <!-- Feet -->
+                    <ellipse cx="45" cy="172" rx="14" ry="6" fill="#ffb347"/>
+                    <ellipse cx="75" cy="172" rx="14" ry="6" fill="#ffb347"/>
+                </svg>
+                <div class="flag-container">
+                    <div class="flag-pole">
+                        <div class="flag-banner">1:26</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Holding Hands Heart -->
-            <div class="holding-hands">❤️</div>
+            <!-- Heart -->
+            <div class="heart-link">&#10084;&#65039;</div>
 
             <!-- Steve -->
-            <div class="penguin-container">
+            <div class="penguin-wrap">
                 <div class="penguin-name">Steve</div>
-                <div class="penguin">
-                    <div class="penguin-body"></div>
-                    <div class="penguin-belly"></div>
-                    <div class="penguin-head">
-                        <div class="penguin-face"></div>
-                        <div class="eye eye-left">
-                            <div class="pupil">
-                                <div class="sparkle"></div>
-                            </div>
-                        </div>
-                        <div class="eye eye-right">
-                            <div class="pupil">
-                                <div class="sparkle"></div>
-                            </div>
-                        </div>
-                        <div class="cheek cheek-left"></div>
-                        <div class="cheek cheek-right"></div>
-                        <div class="beak"></div>
-                    </div>
-                    <div class="wing wing-left"></div>
-                    <div class="wing wing-right">
-                        <div class="flag-pole">
-                            <div class="flag">
-                                <div class="flag-text">1:26</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="feet">
-                        <div class="foot"></div>
-                        <div class="foot"></div>
-                    </div>
-                </div>
+                <svg class="penguin-svg" viewBox="0 0 120 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Body -->
+                    <ellipse cx="60" cy="120" rx="42" ry="55" fill="#1a2332"/>
+                    <!-- Belly -->
+                    <ellipse cx="60" cy="125" rx="28" ry="42" fill="white"/>
+                    <!-- Head -->
+                    <ellipse cx="60" cy="55" rx="36" ry="32" fill="#1a2332"/>
+                    <!-- Face -->
+                    <ellipse cx="60" cy="60" rx="24" ry="18" fill="white"/>
+                    <!-- Eyes -->
+                    <ellipse cx="50" cy="52" rx="8" ry="9" fill="white" stroke="#1a2332" stroke-width="1.5"/>
+                    <ellipse cx="70" cy="52" rx="8" ry="9" fill="white" stroke="#1a2332" stroke-width="1.5"/>
+                    <circle cx="51" cy="52" r="4.5" fill="#1a1a2e"/>
+                    <circle cx="71" cy="52" r="4.5" fill="#1a1a2e"/>
+                    <circle cx="49" cy="50" r="1.8" fill="white"/>
+                    <circle cx="69" cy="50" r="1.8" fill="white"/>
+                    <!-- Cheeks -->
+                    <ellipse cx="40" cy="62" rx="7" ry="5" fill="#ff9eb8" opacity="0.6"/>
+                    <ellipse cx="80" cy="62" rx="7" ry="5" fill="#ff9eb8" opacity="0.6"/>
+                    <!-- Beak -->
+                    <path d="M54 65 L60 74 L66 65 Z" fill="#ffb347"/>
+                    <!-- Wings -->
+                    <ellipse cx="20" cy="110" rx="14" ry="32" fill="#1a2332" transform="rotate(-10, 20, 110)"/>
+                    <ellipse cx="100" cy="110" rx="14" ry="32" fill="#1a2332" transform="rotate(10, 100, 110)"/>
+                    <!-- Feet -->
+                    <ellipse cx="45" cy="172" rx="14" ry="6" fill="#ffb347"/>
+                    <ellipse cx="75" cy="172" rx="14" ry="6" fill="#ffb347"/>
+                </svg>
             </div>
+
+            <div class="ice-platform"></div>
         </div>
 
         <div class="countdown" id="countdown"></div>
 
-        <button class="test-button" id="testButton">🐧 Test Larry & Steve! 🐧</button>
+        <button class="test-button" id="testButton">Test the Celebration</button>
 
         <div class="info">
-            Stick around until 1:26 for a daily surprise with Larry and Steve! 🐧<br>
-            Keep this page open in your browser.
+            Larry & Steve wave every day at 1:26 PM ET<br>
+            Keep this page open to catch the show
         </div>
     </div>
 
     <script>
-        let waveTimeout = null;
+        // --- Stars ---
+        (function createStars() {
+            const container = document.getElementById('stars');
+            for (let i = 0; i < 60; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 60 + '%';
+                star.style.animationDelay = (Math.random() * 3) + 's';
+                star.style.animationDuration = (2 + Math.random() * 2) + 's';
+                star.style.width = star.style.height = (1 + Math.random() * 2) + 'px';
+                container.appendChild(star);
+            }
+        })();
+
+        // --- Snowflakes ---
+        (function createSnowflakes() {
+            const flakes = ['\u2744', '\u2022', '\u00B7'];
+            for (let i = 0; i < 20; i++) {
+                const el = document.createElement('div');
+                el.className = 'snowflake';
+                el.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+                el.style.left = Math.random() * 100 + '%';
+                el.style.animationDelay = (Math.random() * 12) + 's';
+                el.style.animationDuration = (8 + Math.random() * 6) + 's';
+                el.style.fontSize = (10 + Math.random() * 10) + 'px';
+                document.body.appendChild(el);
+            }
+        })();
+
+        // --- Scene entrance ---
+        requestAnimationFrame(() => {
+            document.getElementById('scene').classList.add('visible');
+        });
+
+        // --- Clock & Celebration ---
         let isWaving = false;
-
-        // Daily variations for Larry and Steve
-        const dailyVariations = [
-            { // Sunday
-                larryColor: '#2c3e50',
-                steveColor: '#34495e',
-                action: 'wave',
-                accessory: '🎩' // Top hat
-            },
-            { // Monday
-                larryColor: '#e74c3c',
-                steveColor: '#c0392b',
-                action: 'spin',
-                accessory: '🎀' // Bow tie
-            },
-            { // Tuesday
-                larryColor: '#3498db',
-                steveColor: '#2980b9',
-                action: 'jump',
-                accessory: '👓' // Glasses
-            },
-            { // Wednesday
-                larryColor: '#2ecc71',
-                steveColor: '#27ae60',
-                action: 'wiggle',
-                accessory: '🎩' // Top hat
-            },
-            { // Thursday
-                larryColor: '#f39c12',
-                steveColor: '#d68910',
-                action: 'wave',
-                accessory: '🎀' // Bow tie
-            },
-            { // Friday
-                larryColor: '#9b59b6',
-                steveColor: '#8e44ad',
-                action: 'dance',
-                accessory: '👓' // Glasses
-            },
-            { // Saturday
-                larryColor: '#e67e22',
-                steveColor: '#d35400',
-                action: 'bounce',
-                accessory: '🎩' // Top hat
-            }
-        ];
-
-        function applyDailyVariation() {
-            const today = new Date().getDay(); // 0 = Sunday, 1 = Monday, etc.
-            const variation = dailyVariations[today];
-
-            // Apply colors to penguins
-            const larryBody = document.querySelectorAll('.penguin-container:first-child .penguin-body, .penguin-container:first-child .penguin-head, .penguin-container:first-child .wing');
-            const steveBody = document.querySelectorAll('.penguin-container:nth-child(3) .penguin-body, .penguin-container:nth-child(3) .penguin-head, .penguin-container:nth-child(3) .wing');
-
-            larryBody.forEach(el => el.style.background = variation.larryColor);
-            steveBody.forEach(el => el.style.background = variation.steveColor);
-
-            // Add accessory to their names
-            document.querySelector('.penguin-container:first-child .penguin-name').textContent = `${variation.accessory} Larry`;
-            document.querySelector('.penguin-container:nth-child(3) .penguin-name').textContent = `Steve ${variation.accessory}`;
-        }
-
-        // Add some snowflakes for decoration
-        function createSnowflakes() {
-            for (let i = 0; i < 15; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.classList.add('snowflake');
-                snowflake.textContent = '❄';
-                snowflake.style.left = Math.random() * 100 + '%';
-                snowflake.style.animationDelay = Math.random() * 10 + 's';
-                snowflake.style.animationDuration = (Math.random() * 5 + 8) + 's';
-                document.body.appendChild(snowflake);
-            }
-        }
-
-        createSnowflakes();
+        let waveTimeout = null;
 
         function updateClock() {
             const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${h}:${m}:${s}`;
 
-            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+            // 1:25 reminder notification
+            if (h === '13' && m === '25' && s === '00') showReminder();
 
-            // Check if it's 1:25 PM (13:25) - send reminder notification
-            if (hours === '13' && minutes === '25' && seconds === '00') {
-                showReminderNotification();
-            }
-
-            // Check if it's 1:26 PM (13:26)
-            if (hours === '13' && minutes === '26' && seconds === '00' && !isWaving) {
-                startWaving();
-            }
+            // 1:26 celebration
+            if (h === '13' && m === '26' && s === '00' && !isWaving) startCelebration();
 
             updateCountdown(now);
         }
 
         function updateCountdown(now) {
-            const currentHour = now.getHours();
-            const currentMinute = now.getMinutes();
-            const currentSecond = now.getSeconds();
+            const target = 13 * 60 + 26; // 1:26 PM in minutes
+            const current = now.getHours() * 60 + now.getMinutes();
+            const currentSec = now.getSeconds();
 
-            // Calculate seconds until 1:26 PM
-            let targetHour = 13;
-            let targetMinute = 26;
+            let diffMin = target - current;
+            let diffSec = -currentSec;
 
-            let hoursUntil = targetHour - currentHour;
-            let minutesUntil = targetMinute - currentMinute;
-            let secondsUntil = -currentSecond;
+            if (diffMin < 0 || (diffMin === 0 && diffSec <= 0)) diffMin += 24 * 60;
+            if (diffSec < 0) { diffSec += 60; diffMin -= 1; }
 
-            // If it's past 1:26 PM today, calculate for tomorrow
-            if (hoursUntil < 0 || (hoursUntil === 0 && minutesUntil < 0)) {
-                hoursUntil += 24;
-            }
-
-            // Adjust for negative seconds
-            if (secondsUntil < 0) {
-                secondsUntil += 60;
-                minutesUntil -= 1;
-            }
-
-            // Adjust for negative minutes
-            if (minutesUntil < 0) {
-                minutesUntil += 60;
-                hoursUntil -= 1;
-            }
+            const hrs = Math.floor(diffMin / 60);
+            const mins = diffMin % 60;
 
             if (!isWaving) {
                 document.getElementById('countdown').textContent =
-                    `Next wave in: ${hoursUntil}h ${minutesUntil}m ${secondsUntil}s`;
+                    `Next wave in ${hrs}h ${mins}m ${diffSec}s`;
             }
         }
 
-        let celebrationAudio = null;
-
-        function startWaving() {
+        function startCelebration() {
             isWaving = true;
-            const wrapper = document.getElementById('penguinsWrapper');
+            const scene = document.getElementById('scene');
             const status = document.getElementById('status');
             const countdown = document.getElementById('countdown');
 
-            wrapper.classList.add('active');
+            scene.classList.add('celebrating');
+            status.classList.add('celebrating');
+            status.textContent = 'LARRY & STEVE ARE CELEBRATING!';
 
-            // Apply daily action animation
-            const today = new Date().getDay();
-            const variation = dailyVariations[today];
-            const containers = document.querySelectorAll('.penguin-container');
+            playFanfare();
+            launchFireworks();
 
-            containers.forEach(container => {
-                container.style.animation = `${variation.action} 1.8s ease-in-out infinite`;
-            });
+            let remaining = 30;
+            countdown.textContent = `Celebration ends in ${remaining}s`;
 
-            status.textContent = '🎉 LARRY & STEVE ARE CELEBRATING! 🎉';
-
-            // Play happy celebration music
-            playHappyMusic();
-
-            let remainingSeconds = 30;
-            countdown.textContent = `Wave ends in: ${remainingSeconds} seconds`;
-
-            const countdownInterval = setInterval(() => {
-                remainingSeconds--;
-                countdown.textContent = `Wave ends in: ${remainingSeconds} seconds`;
-
-                if (remainingSeconds <= 0) {
-                    clearInterval(countdownInterval);
-                }
+            const interval = setInterval(() => {
+                remaining--;
+                countdown.textContent = `Celebration ends in ${remaining}s`;
+                if (remaining <= 0) clearInterval(interval);
             }, 1000);
 
-            waveTimeout = setTimeout(() => {
-                stopWaving();
-            }, 30000);
+            waveTimeout = setTimeout(stopCelebration, 30000);
         }
 
-        function playHappyMusic() {
-            // Create a big celebration fanfare that plays once
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-                // Triumphant fanfare - plays once at the beginning
-                const fanfare = [
-                    { note: 523.25, duration: 0.3 },  // C
-                    { note: 659.25, duration: 0.3 },  // E
-                    { note: 783.99, duration: 0.3 },  // G
-                    { note: 1046.50, duration: 0.6 }, // C high
-                    { note: 783.99, duration: 0.2 },  // G
-                    { note: 1046.50, duration: 0.8 }, // C high - finale
-                ];
-
-                let currentTime = audioContext.currentTime;
-
-                fanfare.forEach(({ note, duration }) => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-
-                    oscillator.frequency.value = note;
-                    oscillator.type = 'triangle';
-
-                    gainNode.gain.setValueAtTime(0.25, currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, currentTime + duration);
-
-                    oscillator.start(currentTime);
-                    oscillator.stop(currentTime + duration);
-
-                    currentTime += duration;
-                });
-
-                celebrationAudio = audioContext;
-
-                // Launch fireworks!
-                launchFireworks();
-            } catch (e) {
-                console.log('Audio not supported');
-                // Still launch fireworks even if audio fails
-                launchFireworks();
-            }
-        }
-
-        function launchFireworks() {
-            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#ff9ff3', '#54a0ff', '#00d2d3'];
-
-            // Launch multiple fireworks over 5 seconds
-            for (let i = 0; i < 15; i++) {
-                setTimeout(() => {
-                    createFirework(
-                        Math.random() * window.innerWidth,
-                        Math.random() * window.innerHeight * 0.6 + window.innerHeight * 0.2,
-                        colors[Math.floor(Math.random() * colors.length)]
-                    );
-                }, i * 300);
-            }
-        }
-
-        function createFirework(x, y, color) {
-            const particleCount = 30;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                particle.style.backgroundColor = color;
-
-                const angle = (Math.PI * 2 * i) / particleCount;
-                const velocity = 50 + Math.random() * 100;
-                const tx = Math.cos(angle) * velocity;
-                const ty = Math.sin(angle) * velocity;
-
-                particle.style.setProperty('--tx', tx + 'px');
-                particle.style.setProperty('--ty', ty + 'px');
-                particle.style.animation = 'explode 1s ease-out forwards';
-
-                document.body.appendChild(particle);
-
-                setTimeout(() => {
-                    particle.remove();
-                }, 1000);
-            }
-        }
-
-        function stopWaving() {
+        function stopCelebration() {
             isWaving = false;
-            const wrapper = document.getElementById('penguinsWrapper');
+            const scene = document.getElementById('scene');
             const status = document.getElementById('status');
 
-            wrapper.classList.remove('active');
-            status.textContent = 'See you tomorrow at 1:26 PM! 👋';
-
-            // Stop the music
-            if (celebrationAudio) {
-                try {
-                    celebrationAudio.close();
-                    celebrationAudio = null;
-                } catch (e) {
-                    console.log('Could not close audio context');
-                }
-            }
+            scene.classList.remove('celebrating');
+            status.classList.remove('celebrating');
+            status.textContent = 'See you tomorrow at 1:26 PM!';
 
             setTimeout(() => {
                 status.textContent = 'Waiting for 1:26 PM...';
             }, 5000);
         }
 
-        // Test button functionality
-        document.getElementById('testButton').addEventListener('click', () => {
-            if (!isWaving) {
-                startWaving();
+        // --- Audio ---
+        function playFanfare() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const notes = [
+                    { freq: 523.25, dur: 0.25 },
+                    { freq: 659.25, dur: 0.25 },
+                    { freq: 783.99, dur: 0.25 },
+                    { freq: 1046.50, dur: 0.5 },
+                    { freq: 783.99, dur: 0.15 },
+                    { freq: 1046.50, dur: 0.7 },
+                ];
+                let t = ctx.currentTime;
+                notes.forEach(({ freq, dur }) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.value = freq;
+                    osc.type = 'triangle';
+                    gain.gain.setValueAtTime(0.2, t);
+                    gain.gain.exponentialRampToValueAtTime(0.01, t + dur);
+                    osc.start(t);
+                    osc.stop(t + dur);
+                    t += dur;
+                });
+            } catch (e) { /* audio not supported */ }
+        }
+
+        // --- Fireworks ---
+        function launchFireworks() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffd700', '#ff9ff3', '#54a0ff'];
+            for (let i = 0; i < 12; i++) {
+                setTimeout(() => {
+                    createFirework(
+                        Math.random() * window.innerWidth,
+                        Math.random() * window.innerHeight * 0.5 + window.innerHeight * 0.15,
+                        colors[Math.floor(Math.random() * colors.length)]
+                    );
+                }, i * 350);
             }
-        });
+        }
 
-        // Apply daily variation when page loads
-        applyDailyVariation();
+        function createFirework(x, y, color) {
+            for (let i = 0; i < 24; i++) {
+                const p = document.createElement('div');
+                p.className = 'firework-particle';
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                p.style.backgroundColor = color;
 
-        // Update clock every second
-        setInterval(updateClock, 1000);
-        updateClock();
+                const angle = (Math.PI * 2 * i) / 24;
+                const vel = 40 + Math.random() * 80;
+                p.style.setProperty('--tx', Math.cos(angle) * vel + 'px');
+                p.style.setProperty('--ty', Math.sin(angle) * vel + 'px');
+                p.style.animation = 'firework-burst 0.9s ease-out forwards';
 
-        // Show notification permission request
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 900);
+            }
+        }
+
+        // --- Notifications ---
         if ('Notification' in window && Notification.permission === 'default') {
             Notification.requestPermission();
         }
 
-        // Show reminder notification at 1:25 PM
-        function showReminderNotification() {
+        function showReminder() {
             if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('⏰ Get Ready! Larry & Steve in 1 minute!', {
-                    body: 'The penguin wave is coming at 1:26 PM! Don\'t miss it! 🐧',
-                    icon: '🐧',
+                new Notification('Get ready! Larry & Steve in 1 minute!', {
+                    body: 'The penguin wave is coming at 1:26 PM!',
                     requireInteraction: false
                 });
             }
-            // Also play a sound if possible
-            try {
-                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTGH0fPTgjMGHm7A7+OZUQ4QV6/m77BdGgpLouLyu2cbBTKJ0fLPfS4FJHbG79+SQQoRX7Pq66dXFAo+muD1vmwiBjWJ0fPRgDEGIm/A7+aYUQ0PVrDm8Ktb');
-                audio.volume = 0.3;
-                audio.play().catch(() => {}); // Ignore errors if audio doesn't play
-            } catch (e) {
-                // Ignore audio errors
-            }
         }
 
-        // Show notification at 1:26 PM when wave starts
-        function showNotification() {
+        function showCelebrationNotification() {
             if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification('🐧 Larry & Steve are Waving!', {
-                    body: 'It\'s 1:26! Your penguin pals are here!',
-                    icon: '🐧'
+                new Notification('Larry & Steve are Waving!', {
+                    body: "It's 1:26! Your penguin pals are here!"
                 });
             }
         }
 
-        // Add notification to the wave start
-        const originalStartWaving = startWaving;
-        startWaving = function() {
-            showNotification();
-            originalStartWaving();
+        // Wrap startCelebration with notification
+        const _startCelebration = startCelebration;
+        startCelebration = function() {
+            showCelebrationNotification();
+            _startCelebration();
         };
+
+        // --- Test button ---
+        document.getElementById('testButton').addEventListener('click', () => {
+            if (!isWaving) startCelebration();
+        });
+
+        // --- Init ---
+        setInterval(updateClock, 1000);
+        updateClock();
     </script>
 </body>
 </html>
